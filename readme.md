@@ -13,6 +13,7 @@
 ## Установка и настройка
 
 1. Добавьте модуль в проект
+
 Если используется grunt-скрипт [Irdiium Project Builder](https://github.com/bladerunner2020/iridium-project-builder)
 для автоматического построения проектов, то для установки модуля нужно использовать команду:
 
@@ -66,7 +67,8 @@ new SyslogServer()
 ## Пример проекта
 
 В папке **test** находится тестовый проект **iridium-syslog.irpz**, который собирается при помощи grunt-скрипта [Irdiium Project Builder](https://github.com/bladerunner2020/iridium-project-builder).
-В папке [test/build](https://github.com/bladerunner2020/iridium-syslog/tree/master/test/build) находится уже собранный проект - скачивайте и смотрите как все работает. :smile:
+В папке [test/build](https://github.com/bladerunner2020/iridium-syslog/tree/master/test/build) находится
+уже собранный проект - скачивайте и смотрите, как все работает. :smile:
 
 ## Ограничения и планы на будущее
 
