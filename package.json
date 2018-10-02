@@ -1,0 +1,15 @@
+{
+  "name": "iridium-syslog",
+  "version": "1.0.0",
+  "description": "Syslog Server for iRidium mobile (i3pro)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alexander Pivovarov aka balderunner2020 (pivovarov@gmail.com)",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-bump": "^0.8.0"
+  }
+}
