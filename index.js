@@ -46,7 +46,11 @@ function SyslogServer(port, name) {
             }
         }
 
-        if (message.indexOf('DEBUG: ') == 0) {
+
+        if (message.indexOf('INFO: ') == 0) {
+            event = 'info';
+            message = message.substr(6);
+        } else if (message.indexOf('DEBUG: ') == 0) {
             event = 'debug';
             message = message.substr(7);
         } else if (message.indexOf('ERROR: ') == 0) {
