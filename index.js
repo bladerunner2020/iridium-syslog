@@ -52,8 +52,10 @@ function SyslogServer(port, name) {
         } else if (message.indexOf('ERROR: ') == 0) {
             event = 'error';
             message = message.substr(7);
+        } else if (message.indexOf('WARNING: ') == 0) {
+            event = 'warning';
+            message = message.substr(9);
         }
-
 
         return {event: event, message: message, source: source, timestamp : dateStr};
     };
