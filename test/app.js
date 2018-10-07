@@ -1,12 +1,10 @@
-_DEBUGGER.addConsole(new SimpleDebugConsole());
-
 
 var debugConsole = new DebugConsole({
-    lineCount: 30,
+    lineCount: 25,
     maxBufferSize: 1024,
-    noConsoleLog: true,
-    defaultPage: 'Main',
-    debugPage: 'Debug'});
+    noConsoleLog: true, // Важно! Должно быть true в случае использования SyslogServer'а.
+  //  defaultPage: 'Main',
+    debugPage: 'DebugPopup'});
 
 
 new SyslogServer()
@@ -18,37 +16,52 @@ new SyslogServer()
         IR.ShowPopup("MsgBox");
     });
 
+
+// Функция для показа отладочной панели 
+function showDebugConsole() {
+    debugConsole.showConsole();
+}
+
+
+// Функции для вывода отладочной информации вместо IR.Log
+function _Debug(message) {
+    IR.Log('DEBUG: ' + message);
+}
+
+function _Log(message) {
+    IR.Log(message);
+}
+
+function _Error(message) {
+    IR.Log('ERROR: ' + message);
+}
+
+
+// Генерируем тестовый контент для вывода 
 var count = 0;
-IR.SetInterval(5000, function () {
+IR.SetInterval(1000, function () {
     var index = Math.floor(((Math.random() * 10))/10*3) + 1;
     count++;
 
     switch (index) {
         case 1:
-            _Debug('count = ' + count, 'app');
+            _Debug('count = ' + count);
             break;
         case 2:
-            _Log('count = ' + count, 'app');
+            _Log('count = ' + count);
             break;
         case 3:
-            _Error('count = ' + count, 'app');
+            _Error('count = ' + count);
             break;
     }
 });
 
-
 function throwError() {
     var a = null;
-
     var b = a.oops;
-
-
-   // throw new Error('user defined error');
-
 }
 
 function throwError2() {
     throw new Error('Throw user defined error');
 }
-
 

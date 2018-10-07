@@ -1,6 +1,6 @@
 {
   "name": "iridium-syslog-test",
-  "version": "1.0.43",
+  "version": "1.0.99",
   "description": "",
   "main": "index.js",
   "private": true,
@@ -25,14 +25,10 @@
     "grunt-zip": "^0.17.1"
   },
   "dependencies": {
-
+    "debug-console": "git+https://github.com/bladerunner2020/debug-console.git"
   },
-  "projectScripts" :
-  [
-    "../../debug2/index.js",
-    "../../debug-console/index.js",
+  "projectScripts": [
     "../index.js",
     "app.js"
   ]
-
 }
