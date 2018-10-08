@@ -14,7 +14,7 @@
 
 1. Добавьте модуль в проект
 
- Если используется grunt-скрипт [Irdiium Project Builder](https://github.com/bladerunner2020/iridium-project-builder)
+ Если используется grunt-скрипт [Iridium Project Builder](https://github.com/bladerunner2020/iridium-project-builder)
  для автоматического построения проектов, то для установки модуля нужно использовать команду:
 
  ```npm
@@ -30,7 +30,7 @@
 
 
  **ВАЖНО:** На ОС Android и MacOS для доступа к порту 514 требуется root-доступ, поэтому необходимо использовать порт
- с адресом выше 1024.
+ с адресом выше 1024, например 1514.
 
 
  ![](images/settings_ru.png)
@@ -71,7 +71,7 @@ new SyslogServer()
 
 ## Пример проекта
 
-В папке **test** находится тестовый проект **iridium-syslog.irpz**, который собирается при помощи grunt-скрипта [Irdiium Project Builder](https://github.com/bladerunner2020/iridium-project-builder).
+В папке **test** находится тестовый проект **iridium-syslog.irpz**, который собирается при помощи grunt-скрипта [Iridium Project Builder](https://github.com/bladerunner2020/iridium-project-builder).
 В папке [test/build](https://github.com/bladerunner2020/iridium-syslog/tree/master/test/build) находится
 уже собранный проект - скачивайте и смотрите, как все работает. :smile:
 
