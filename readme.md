@@ -14,21 +14,26 @@
 
 1. Добавьте модуль в проект
 
-Если используется grunt-скрипт [Irdiium Project Builder](https://github.com/bladerunner2020/iridium-project-builder)
-для автоматического построения проектов, то для установки модуля нужно использовать команду:
+ Если используется grunt-скрипт [Irdiium Project Builder](https://github.com/bladerunner2020/iridium-project-builder)
+ для автоматического построения проектов, то для установки модуля нужно использовать команду:
 
-```npm
-npm install https://github.com/bladerunner2020/iridium-syslog.git --save
-```
+ ```npm
+ npm install https://github.com/bladerunner2020/iridium-syslog.git --save
+ ```
 
-В противном случае просто скопируйте код из index.js в ваш irpz-проект.
+ В противном случае просто скопируйте код из index.js в ваш irpz-проект.
 
 2. Настройте удаленную отладку в свойствах irpz-проекта.
 
-В свойствах проекта обязательно нужно указать хост: *127.0.0.1* (при необходимости можно сменить порт).
-Уровень отладки рекомендуется **INFO** или **DEBUG**.
+ В свойствах проекта обязательно нужно указать хост: *127.0.0.1* (при необходимости сменить порт).
+ Уровень отладки рекомендуется **INFO** или **DEBUG**.
 
-![](images/settings_ru.png)
+
+ **ВАЖНО:** На ОС Android и MacOS для доступа к порту 514 требуется root-доступ, поэтому необходимо использовать порт
+ с адресом выше 1024.
+
+
+ ![](images/settings_ru.png)
 
 ## Использование
 
@@ -69,6 +74,9 @@ new SyslogServer()
 В папке **test** находится тестовый проект **iridium-syslog.irpz**, который собирается при помощи grunt-скрипта [Irdiium Project Builder](https://github.com/bladerunner2020/iridium-project-builder).
 В папке [test/build](https://github.com/bladerunner2020/iridium-syslog/tree/master/test/build) находится
 уже собранный проект - скачивайте и смотрите, как все работает. :smile:
+
+**ВАЖНО:** Для того чтобы пример мог рабоать на любых ОС вместо порта 514 в нем используется порт 1514.
+
 
 ## Ограничения и планы на будущее
 

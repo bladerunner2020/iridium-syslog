@@ -43,6 +43,11 @@ function SyslogServer(port, name) {
             data = message.split('\\');
             if (data.length > 2) {
                 message = data[0].slice(0, -2) + data[data.length - 1];
+            } else {
+                data = message.split('/');
+                if (data.length > 2) {
+                    message = data[data.length - 1];
+                }
             }
         }
 
@@ -91,7 +96,21 @@ function SyslogServer(port, name) {
         }
     };
 
-    
+    IR.AddListener(IR.EVENT_ONLINE, this.server, function() {
+        var msg = {event: 'online', message: 'EVENT_ONLINE', source: 'SyslogServer', timestamp: new Date()};
+
+        that.callEvent('all', msg);
+        that.callEvent('online', msg);
+    });
+
+    IR.AddListener(IR.EVENT_OFFLINE, this.server, function() {
+        var msg = {event: 'offline', message: 'EVENT_OFFLINE', source: 'SyslogServer', timestamp: new Date()};
+
+        that.callEvent('all', msg);
+        that.callEvent('offline', msg);
+    });
+
+
     IR.AddListener(IR.EVENT_RECEIVE_TEXT, this.server, function(text) {
         var msg = that.parseSyslogMessage(text);
         
