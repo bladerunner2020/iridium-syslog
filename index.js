@@ -46,7 +46,7 @@ function SyslogServer(port, name) {
             } else {
                 data = message.split('/');
                 if (data.length > 2) {
-                    message = data[data.length - 1];
+                    message = data[0] + data[data.length - 1];
                 }
             }
         }
