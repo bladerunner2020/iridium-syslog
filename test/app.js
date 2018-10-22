@@ -7,7 +7,10 @@ var debugConsole = new DebugConsole({
     debugPage: 'DebugPopup'});
 
 
-new SyslogServer(1514)
+var syslog =
+    new SyslogServer(1514);
+
+syslog
     .on('all', function (msg) {
          debugConsole.log(msg);
     })
@@ -15,6 +18,7 @@ new SyslogServer(1514)
         IR.GetPopup("MsgBox").GetItem("ErrorText").Text = msg.message;
         IR.ShowPopup("MsgBox");
     });
+    //.setForward('192.168.96.56', 1514);
 
 
 // Функция для показа отладочной панели 

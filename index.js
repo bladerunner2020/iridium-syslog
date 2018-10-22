@@ -4,6 +4,8 @@ function SyslogServer(port, name) {
     var that = this;
 
     this.callbacks = {};
+    this.forwardDriver = null;
+    this.forwardEnabled = true;
 
     this.port = port || 514;
     this.serverName = name || 'SyslogServer';
@@ -96,6 +98,43 @@ function SyslogServer(port, name) {
         }
     };
 
+    this.setForward = function (ip, port) {
+        if (this.forwardDriver) {
+            var options = {};
+            if (ip) {
+                options.Host = ip;
+            }
+            if (port) {
+                options.Port = port;
+            }
+            this.forwardDriver.SetParameters(options);
+            this.Connect();
+        } else {
+            this.forwardDriver = IR.CreateDevice(IR.DEVICE_CUSTOM_UDP, 'SysLogSender', {
+                Host: ip,
+                Port: port || 514,
+                LocalPort: port || 514,
+                Group: null,             // null - broadcast, "host" - multicast group
+                Multicast: false,       // false - broadcast, true - multicast (if multicast group added)
+                ScriptMode: IR.DIRECT_AND_SCRIPT
+            });
+        }
+
+        return this;
+    };
+
+    this.enableForward = function () {
+        this.forwardEnabled = true;
+
+        return this;
+    };
+
+    this.disableForward = function () {
+        this.forwardEnabled = false;
+
+        return this;
+    };
+
     IR.AddListener(IR.EVENT_ONLINE, this.server, function() {
         var msg = {event: 'online', message: 'EVENT_ONLINE', source: 'SyslogServer', timestamp: new Date()};
 
@@ -116,5 +155,9 @@ function SyslogServer(port, name) {
         
         that.callEvent('all', msg);
         that.callEvent(msg.event, msg);
+
+        if (that.forwardDriver && that.forwardEnabled) {
+            that.forwardDriver.Send([text]);
+        }
     });
 }
