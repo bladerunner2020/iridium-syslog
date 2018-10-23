@@ -9,8 +9,10 @@ function SyslogServer(port, name) {
 
     this.port = port || 514;
     this.serverName = name || 'SyslogServer';
-    this.server = IR.CreateDevice(IR.DEVICE_CUSTOM_SERVER_UDP, this.serverName,
-        {Port: this.port, MaxClients: 1});
+    this.server = IR.CreateDevice(IR.DEVICE_CUSTOM_SERVER_UDP, this.serverName, {
+        Port: this.port,
+        MaxClients: 5,
+        LogLevel: 4});  // уровень отладки Warning (https://dev.iridi.com/Drivers_API/en#Log_Levels)
 
     this.setPort = function (port) {
         this.port = port;

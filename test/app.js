@@ -7,10 +7,9 @@ var debugConsole = new DebugConsole({
     debugPage: 'DebugPopup'});
 
 
-var syslog =
-    new SyslogServer(1514);
+var syslogServer = new SyslogServer(1514);
 
-syslog
+syslogServer
     .on('all', function (msg) {
          debugConsole.log(msg);
     })
