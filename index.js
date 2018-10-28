@@ -110,7 +110,12 @@ function SyslogServer(port, name) {
                 options.Port = port;
             }
             this.forwardDriver.SetParameters(options);
-            this.Connect();
+            
+            if (ip != '' && ip != undefined) {
+                this.Connect();
+            } else {
+                this.Disconnect();
+            }
         } else {
             this.forwardDriver = IR.CreateDevice(IR.DEVICE_CUSTOM_UDP, 'SysLogSender', {
                 Host: ip,
@@ -120,6 +125,13 @@ function SyslogServer(port, name) {
                 Multicast: false,       // false - broadcast, true - multicast (if multicast group added)
                 ScriptMode: IR.DIRECT_AND_SCRIPT
             });
+
+            if (ip != '' && ip != undefined) {
+                this.Connect();
+            } else {
+                this.Disconnect();
+            }            
+            
         }
 
         return this;
