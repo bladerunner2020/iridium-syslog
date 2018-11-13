@@ -21,6 +21,11 @@ function SyslogServer(port, name) {
         return this;
     };
 
+
+    // Пример Syslog сообщения:
+    // <6>[13-11-2018 20:38:09.962]	INFO	SCRIPT	Some Message...
+    // Разделитель: \t
+
     this.parseSyslogMessage = function (text) {
         var levelStr = text.substr(0, 3);
         var index1 = text.indexOf('[');
@@ -94,9 +99,7 @@ function SyslogServer(port, name) {
                 if (cb) {
                     cb.apply(this, args);
                 }
-
             }
-
         }
     };
 
@@ -150,14 +153,34 @@ function SyslogServer(port, name) {
     };
 
     IR.AddListener(IR.EVENT_ONLINE, this.server, function() {
-        var msg = {event: 'online', message: 'EVENT_ONLINE', source: 'SyslogServer', timestamp: new Date()};
+        var d = new Date();
+        var timestamp =
+            ('00' + d.getDate()).slice(-2) + '-' +
+            ('00' + (d.getMonth() + 1)).slice(-2) + '-' +
+            d.getFullYear() + ' ' +
+            ('00' + d.getHours()).slice(-2) + ':' +
+            ('00' + d.getMinutes()).slice(-2) + ':' +
+            ('00' + d.getSeconds()).slice(-2) + '.' +
+            ('000' + d.getMilliseconds()).slice(-3);
+
+        var msg = {event: 'info', message: 'SyslogServer - online', source: 'SyslogServer', timestamp: timestamp};
 
         that.callEvent('all', msg);
         that.callEvent('online', msg);
     });
 
     IR.AddListener(IR.EVENT_OFFLINE, this.server, function() {
-        var msg = {event: 'offline', message: 'EVENT_OFFLINE', source: 'SyslogServer', timestamp: new Date()};
+        var d = new Date();
+        var timestamp =
+            ('00' + d.getDate()).slice(-2) + '-' +
+            ('00' + (d.getMonth() + 1)).slice(-2) + '-' +
+            d.getFullYear() + ' ' +
+            ('00' + d.getHours()).slice(-2) + ':' +
+            ('00' + d.getMinutes()).slice(-2) + ':' +
+            ('00' + d.getSeconds()).slice(-2) + '.' +
+            ('000' + d.getMilliseconds()).slice(-3);
+
+        var msg = {event: 'info', message: 'SyslogServer - offline', source: 'SyslogServer', timestamp: timestamp};
 
         that.callEvent('all', msg);
         that.callEvent('offline', msg);

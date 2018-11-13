@@ -1,6 +1,6 @@
 {
   "name": "iridium-syslog",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Syslog Server for iRidium mobile (i3pro)",
   "main": "index.js",
   "scripts": {
