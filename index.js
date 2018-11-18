@@ -21,6 +21,24 @@ function SyslogServer(port, name) {
         return this;
     };
 
+    this.disableServer = function () {
+        // this.server.Disconnect();  // Не работает в текущей версии Iridium?
+
+        IR.RemoveListener(IR.EVENT_ONLINE, this.server,onEventOnline);
+        IR.RemoveListener(IR.EVENT_OFFLINE, this.server, onEventOffline);
+        IR.RemoveListener(IR.EVENT_RECEIVE_TEXT, this.server, onReceiveText);
+    };
+
+    this.enableServer = function () {
+        this.disableServer();
+        
+        IR.AddListener(IR.EVENT_ONLINE, this.server,onEventOnline);
+        IR.AddListener(IR.EVENT_OFFLINE, this.server, onEventOffline);
+        IR.AddListener(IR.EVENT_RECEIVE_TEXT, this.server, onReceiveText);
+
+        // this.server.Connect();   // Неправильно вызывать если не вызывать Disconnect
+    };
+
 
     // Пример Syslog сообщения:
     // <6>[13-11-2018 20:38:09.962]	INFO	SCRIPT	Some Message...
@@ -126,7 +144,8 @@ function SyslogServer(port, name) {
                 LocalPort: port || 514,
                 Group: null,             // null - broadcast, "host" - multicast group
                 Multicast: false,       // false - broadcast, true - multicast (if multicast group added)
-                ScriptMode: IR.DIRECT_AND_SCRIPT
+                ScriptMode: IR.DIRECT_AND_SCRIPT,
+                LogLevel: 4
             });
 
             if (ip != '' && ip != undefined) {
@@ -152,7 +171,7 @@ function SyslogServer(port, name) {
         return this;
     };
 
-    IR.AddListener(IR.EVENT_ONLINE, this.server, function() {
+    function onEventOnline() {
         var d = new Date();
         var timestamp =
             ('00' + d.getDate()).slice(-2) + '-' +
@@ -167,9 +186,9 @@ function SyslogServer(port, name) {
 
         that.callEvent('all', msg);
         that.callEvent('online', msg);
-    });
-
-    IR.AddListener(IR.EVENT_OFFLINE, this.server, function() {
+    }
+    
+    function onEventOffline() {
         var d = new Date();
         var timestamp =
             ('00' + d.getDate()).slice(-2) + '-' +
@@ -183,18 +202,21 @@ function SyslogServer(port, name) {
         var msg = {event: 'info', message: 'SyslogServer - offline', source: 'SyslogServer', timestamp: timestamp};
 
         that.callEvent('all', msg);
-        that.callEvent('offline', msg);
-    });
-
-
-    IR.AddListener(IR.EVENT_RECEIVE_TEXT, this.server, function(text) {
+        that.callEvent('offline', msg);        
+    }
+    
+    function onReceiveText(text) {
         var msg = that.parseSyslogMessage(text);
-        
+
         that.callEvent('all', msg);
         that.callEvent(msg.event, msg);
 
         if (that.forwardDriver && that.forwardEnabled) {
             that.forwardDriver.Send([text]);
-        }
-    });
+        }        
+    }
+
+    IR.AddListener(IR.EVENT_ONLINE, this.server,onEventOnline);
+    IR.AddListener(IR.EVENT_OFFLINE, this.server, onEventOffline);
+    IR.AddListener(IR.EVENT_RECEIVE_TEXT, this.server, onReceiveText);
 }

@@ -11,7 +11,9 @@ var syslogServer = new SyslogServer(1514);
 
 syslogServer
     .on('all', function (msg) {
-         debugConsole.log(msg);
+        if (msg.message.indexOf('***') != 0) {
+            debugConsole.log(msg);
+        }
     })
     .on('warning', function (msg) {
         IR.GetPopup("MsgBox").GetItem("ErrorText").Text = msg.message;
@@ -66,5 +68,15 @@ function throwError() {
 
 function throwError2() {
     throw new Error('Throw user defined error');
+}
+
+function enableSyslog() {
+    IR.Log('*** - enableServer')
+    syslogServer.enableServer();
+}
+
+function disableSyslog() {
+    IR.Log('*** - disableServer')
+    syslogServer.disableServer();
 }
 
