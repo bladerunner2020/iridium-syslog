@@ -133,11 +133,11 @@ function SyslogServer(port, name) {
             this.forwardDriver.SetParameters(options);
             
             if (ip != '' && ip != undefined) {
-                this.Connect();
+                this.forwardDriver.Connect();
             } else {
-                this.Disconnect();
+                this.forwardDriver.Disconnect();
             }
-        } else {
+        } else if (ip != '' && ip != undefined) {
             this.forwardDriver = IR.CreateDevice(IR.DEVICE_CUSTOM_UDP, 'SysLogSender', {
                 Host: ip,
                 Port: port || 514,
@@ -147,13 +147,7 @@ function SyslogServer(port, name) {
                 ScriptMode: IR.DIRECT_AND_SCRIPT,
                 LogLevel: 4
             });
-
-            if (ip != '' && ip != undefined) {
-                this.Connect();
-            } else {
-                this.Disconnect();
-            }            
-            
+            this.forwardDriver.Connect();
         }
 
         return this;
