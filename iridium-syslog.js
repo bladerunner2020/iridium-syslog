@@ -1,9 +1,43 @@
 // Module: SysLogServer
+/*global IR, EventHandler */
 
+// eslint-disable-next-line no-unused-vars
 function SyslogServer(port, name) {
+    if (typeof EventHandler != 'undefined') {
+        EventHandler.call(this);
+    } else {
+        // It's better to use EventHandler module, but if it's not used
+        // we need to define function from EvenHandler
+        this.callbacks = {};
+
+        this.on = function (event, callback) {
+            if (this.callbacks[event]) {
+                this.callbacks[event].push(callback);
+            } else {
+                this.callbacks[event] = [callback];
+            }
+    
+            return this;
+        };
+    
+        this.callEvent = function(/* event, arg1, arg2 ...*/) {
+            var args = Array.prototype.slice.call(arguments, 0);
+            var event = args.shift();
+            var callbacks = this.callbacks[event];
+            if (callbacks) {
+                for (var i = 0; i < callbacks.length; i++) {
+                    var cb = callbacks[i];
+                    
+                    if (cb) {
+                        cb.apply(this, args);
+                    }
+                }
+            }
+        };
+    }
+
     var that = this;
 
-    this.callbacks = {};
     this.forwardDriver = null;
     this.forwardEnabled = true;
 
@@ -45,7 +79,6 @@ function SyslogServer(port, name) {
     // Разделитель: \t
 
     this.parseSyslogMessage = function (text) {
-        var levelStr = text.substr(0, 3);
         var index1 = text.indexOf('[');
         var index2 = text.indexOf(']');
         var index3 = text.indexOf('\n');
@@ -65,7 +98,7 @@ function SyslogServer(port, name) {
         if (event == 'warning') {
             // В случае ошибки в JS Iridium выдает сообщение с типом 'warning' такого вида:
             // Script exception: TypeError: C:\Users\PC\Documents\iRidium pro documents\Client\debug-console\scripts\main.js:452: Tried to use null as an object
-            // чтобы сделать его читаемым, удаляем путь и отсавляем только имя файла
+            // чтобы сделать его читаемым, удаляем путь и оставляем только имя файла
 
             data = message.split('\\');
             if (data.length > 2) {
@@ -94,31 +127,6 @@ function SyslogServer(port, name) {
         }
 
         return {event: event, message: message, source: source, timestamp : dateStr};
-    };
-
-    this.on = function (event, callback) {
-        if (this.callbacks[event]) {
-            this.callbacks[event].push(callback);
-        } else {
-            this.callbacks[event] = [callback];
-        }
-
-        return this;
-    };
-
-    this.callEvent = function(/* event, arg1, arg2 ...*/) {
-        var args = Array.prototype.slice.call(arguments, 0);
-        var event = args.shift();
-        var callbacks = this.callbacks[event];
-        if (callbacks) {
-            for (var i = 0; i < callbacks.length; i++) {
-                var cb = callbacks[i];
-                
-                if (cb) {
-                    cb.apply(this, args);
-                }
-            }
-        }
     };
 
     this.setForward = function (ip, port) {
