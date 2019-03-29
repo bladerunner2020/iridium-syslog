@@ -1,6 +1,23 @@
 // Module: SysLogServer
 /*global IR, EventHandler */
 
+
+// Log levels
+SyslogServer.LOG_LEVEL_EMERGENCY = 0;
+SyslogServer.LOG_LEVEL_ALERT = 1;
+SyslogServer.LOG_LEVEL_CRITICAL = 2;
+SyslogServer.LOG_LEVEL_ERROR = 3;
+SyslogServer.LOG_LEVEL_WARNING = 4;
+SyslogServer.LOG_LEVEL_NOTICE = 5;
+SyslogServer.LOG_LEVEL_INFO = 6;
+SyslogServer.LOG_LEVEL_DEBUG = 7;
+SyslogServer.LOG_LEVEL_NEVER = 8;
+
+SyslogServer.setLogLevel = function(logLevel) {
+    SyslogServer.logLevel = logLevel;
+};
+SyslogServer.logLevel = SyslogServer.LOG_LEVEL_WARNING;
+
 // eslint-disable-next-line no-unused-vars
 function SyslogServer(port, name) {
     if (typeof EventHandler != 'undefined') {
@@ -46,7 +63,7 @@ function SyslogServer(port, name) {
     this.server = IR.CreateDevice(IR.DEVICE_CUSTOM_SERVER_UDP, this.serverName, {
         Port: this.port,
         MaxClients: 5,
-        LogLevel: 4});  // уровень отладки Warning (https://dev.iridi.com/Drivers_API/en#Log_Levels)
+        LogLevel: SyslogServer.logLevel});  // уровень отладки Warning (https://dev.iridi.com/Drivers_API/en#Log_Levels)
 
     this.setPort = function (port) {
         this.port = port;
@@ -153,7 +170,7 @@ function SyslogServer(port, name) {
                 Group: null,             // null - broadcast, "host" - multicast group
                 Multicast: false,       // false - broadcast, true - multicast (if multicast group added)
                 ScriptMode: IR.DIRECT_AND_SCRIPT,
-                LogLevel: 4
+                LogLevel: SyslogServer.logLevel
             });
             this.forwardDriver.Connect();
         }
