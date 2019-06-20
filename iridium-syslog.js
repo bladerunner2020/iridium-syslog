@@ -103,14 +103,19 @@ function SyslogServer(port, name) {
             index3 = text.length;
         }
 
+        if (index2 === -1) {
+            index1 = -1;
+            index2 = 0;
+        }
+
         var dateStr = text.substr(index1 + 1, index2 - index1 - 1);
         var dataStr = text.substr(index2 + 1, index3 - index2 - 1);
 
         var data = dataStr.split('\t');
 
-        var event = data[1].toLowerCase();
-        var source = data[2];
-        var message = data[3];
+        var event = data.length > 1 ? data[1].toLowerCase() : '';
+        var source = data.length > 2 ? data[2] : '';
+        var message = data.length > 3 ? data[3] : data[0];
 
         if (event == 'warning') {
             // В случае ошибки в JS Iridium выдает сообщение с типом 'warning' такого вида:
