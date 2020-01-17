@@ -1,5 +1,5 @@
 // Module: SysLogServer
-/*global IR, EventHandler */
+/*global IR, EventEmitter */
 
 
 // Log levels
@@ -20,8 +20,8 @@ SyslogServer.logLevel = SyslogServer.LOG_LEVEL_WARNING;
 
 // eslint-disable-next-line no-unused-vars
 function SyslogServer(port, name) {
-    if (typeof EventHandler != 'undefined') {
-        EventHandler.call(this);
+    if (typeof EventEmitter != 'undefined') {
+        EventEmitter.call(this);
     } else {
         // It's better to use EventHandler module, but if it's not used
         // we need to define function from EvenHandler
@@ -37,7 +37,7 @@ function SyslogServer(port, name) {
             return this;
         };
     
-        this.callEvent = function(/* event, arg1, arg2 ...*/) {
+        this.emit = function(/* event, arg1, arg2 ...*/) {
             var args = Array.prototype.slice.call(arguments, 0);
             var event = args.shift();
             var callbacks = this.callbacks[event];
@@ -78,6 +78,7 @@ function SyslogServer(port, name) {
         IR.RemoveListener(IR.EVENT_ONLINE, this.server,onEventOnline);
         IR.RemoveListener(IR.EVENT_OFFLINE, this.server, onEventOffline);
         IR.RemoveListener(IR.EVENT_RECEIVE_TEXT, this.server, onReceiveText);
+        this.server.Disconnect();
     };
 
     this.enableServer = function () {
@@ -86,8 +87,7 @@ function SyslogServer(port, name) {
         IR.AddListener(IR.EVENT_ONLINE, this.server,onEventOnline);
         IR.AddListener(IR.EVENT_OFFLINE, this.server, onEventOffline);
         IR.AddListener(IR.EVENT_RECEIVE_TEXT, this.server, onReceiveText);
-
-        // this.server.Connect();   // Неправильно вызывать если не вызывать Disconnect
+        this.server.Connect();   // Неправильно вызывать если не вызывать Disconnect
     };
 
 
@@ -208,8 +208,8 @@ function SyslogServer(port, name) {
 
         var msg = {event: 'info', message: 'SyslogServer - online', source: 'SyslogServer', timestamp: timestamp};
 
-        that.callEvent('all', msg);
-        that.callEvent('online', msg);
+        that.emit('all', msg);
+        that.emit('online', msg);
     }
     
     function onEventOffline() {
@@ -225,15 +225,15 @@ function SyslogServer(port, name) {
 
         var msg = {event: 'info', message: 'SyslogServer - offline', source: 'SyslogServer', timestamp: timestamp};
 
-        that.callEvent('all', msg);
-        that.callEvent('offline', msg);        
+        that.emit('all', msg);
+        that.emit('offline', msg);        
     }
     
     function onReceiveText(text) {
         var msg = that.parseSyslogMessage(text);
 
-        that.callEvent('all', msg);
-        that.callEvent(msg.event, msg);
+        that.emit('all', msg);
+        that.emit(msg.event, msg);
 
         if (that.forwardDriver && that.forwardEnabled) {
             that.forwardDriver.Send([text]);
