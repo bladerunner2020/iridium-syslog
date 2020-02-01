@@ -22,6 +22,7 @@ SyslogServer.logLevel = SyslogServer.LOG_LEVEL_WARNING;
 function SyslogServer(port, name) {
     if (typeof EventEmitter != 'undefined') {
         EventEmitter.call(this);
+        this.on('error', function() {}); // This is necessary to prevent UNHANDLED_ERROR exception
     } else {
         // It's better to use EventHandler module, but if it's not used
         // we need to define function from EvenHandler
